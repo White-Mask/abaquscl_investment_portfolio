@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    # ─── Healthcheck ─────────────────────────────────────────────────────────────
+    # Usa Compose interpolation para inyectar usuario y BD desde tu .env
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DJANGO_DB_USER}", "-d", "${DJANGO_DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+    # ─── Almacenamiento y puertos ─────────────────────────────────────────────────
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+
+    # ─── Variables de entorno para Postgres ───────────────────────────────────────
+    # Aquí usamos Compose interpolation (${VAR}) para asignar los valores definidos en .env
+    environment:
+      POSTGRES_DB:       ${DJANGO_DB_NAME}
+      POSTGRES_USER:     ${DJANGO_DB_USER}
+      POSTGRES_PASSWORD: ${DJANGO_DB_PASSWORD}
+
+
+  web:
+    build: .
+    # Entry-point que espera a la BD, migra, collectstatic y arranca el servidor
+    command: sh -c "./entrypoint.sh"
+
+    # ─── Montajes y puertos ───────────────────────────────────────────────────────
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+
+    # ─── Dependencias ────────────────────────────────────────────────────────────
+    depends_on:
+      - db
+
+    # ─── Variables de entorno para Django ────────────────────────────────────────
+    # Usamos env_file para cargar TODO tu .env (incluye DJANGO_DB_*, SECRET_KEY, DEBUG…)
+    env_file:
+      - .env
+    environment:
+      # Le decimos a Django qué settings usar (dev, stg, prod…)
+      - DJANGO_SETTINGS_MODULE=config.settings.dev
+
+
+volumes:
+  postgres_data:

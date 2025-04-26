@@ -1,0 +1,42 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Panel de Inversiones{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin_custom/css/admin_custom.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="panel-container">
+  <h1 class="panel-title">📈 Panel de Inversiones</h1>
+
+  <div class="card-grid">
+    <a href="{% url 'admin:cargar_excel' %}" class="card">
+      <div class="card-icon">📥</div>
+      <div class="card-title">Cargar archivo Excel</div>
+      <p class="card-description">Sube datos iniciales de pesos y precios</p>
+    </a>
+
+
+    <a href="{% url 'admin:pre_weights_chart' %}" class="card">
+      <div class="card-icon">📊</div>
+      <div class="card-title">Gráficos</div>
+      <p class="card-description">Visualiza la distribución de pesos en tu portafolio</p>
+    </a>
+
+    <a href="{% url 'admin:admin_trade_simulation' %}" class="card">
+      <div class="card-icon">📈</div>
+      <div class="card-title">Tradear</div>
+      <p class="card-description">Realiza operaciones de compra y venta</p>
+    </a>
+
+  <div class="card-grid">
+    
+  </div>
+  <div class="card-grid">
+   
+  </div>
+</div>
+{% endblock %}

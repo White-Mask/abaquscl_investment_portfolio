@@ -1,0 +1,72 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Simulate Trade{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+  .form-wrapper {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-wrapper h2 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .form-wrapper label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+  }
+
+  .form-wrapper input,
+  .form-wrapper select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .form-wrapper button {
+    width: 75%;
+    margin-top: 0.5rem;
+    background-color: #0c63e4;
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .form-wrapper button:hover {
+    background-color: #0849b8;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-wrapper">
+  <h2>Simulate Trade - Portfolio</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="button-container">
+      <button type="submit">Simulate</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

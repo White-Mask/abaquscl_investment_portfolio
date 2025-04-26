@@ -171,4 +171,8 @@ cython_debug/
 .ruff_cache/
 
 # PyPI configuration file
+<<<<<<< HEAD
 .pypirc
+=======
+.pypirc
+>>>>>>> b002bf2 (Initial commit: add Django base settings, Docker Compose and entrypoint scripts)

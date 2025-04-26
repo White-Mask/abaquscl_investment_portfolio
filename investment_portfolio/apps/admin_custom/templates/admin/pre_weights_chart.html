@@ -1,0 +1,146 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Seleccionar Portafolio{% endblock %}
+
+{% block extrahead %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'admin_custom/css/admin_custom.css' %}">
+  <style>
+    /* Estilos generales */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Contenedor principal */
+    .panel-container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    /* Título */
+    .panel-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #333333;
+    }
+
+    /* Formulario */
+    #portfolio-form {
+      text-align: left;
+    }
+
+    /* Etiquetas */
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #555555;
+    }
+
+    /* Select y campos de fecha */
+    select,
+    input[type="date"] {
+      width: 100%;
+      height: 40px;
+      padding: 10px;
+      margin-top: 5px;
+      font-size: 16px;
+      border: 1px solid #cccccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    /* Botón */
+    .button-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+    }
+    
+    button.btn-primary {
+      display: inline-block;
+      width: 75%;
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      color: #ffffff;
+      background-color: #007bff; /* Azul primario */
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button.btn-primary:hover {
+      background-color: #0056b3; /* Azul más oscuro */
+    }
+
+    /* Mensaje cuando no hay portafolios */
+    p {
+      font-size: 18px;
+      color: #888888;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div class="panel-container">
+    <h1 class="panel-title">Seleccionar Portafolio</h1>
+
+    {% if portfolios %}
+    <form id="portfolio-form">
+      <label for="portfolio-select">Elige un portafolio:</label>
+      <select id="portfolio-select" required>
+        {% for portfolio in portfolios %}
+          <option value="{{ portfolio.pk }}">{{ portfolio.name }}</option>
+        {% endfor %}
+      </select>
+    
+      <label for="date-start">Fecha de inicio:</label>
+      <input type="date" id="date-start" required>
+    
+      <label for="date-end">Fecha de fin:</label>
+      <input type="date" id="date-end" required>
+    
+      <div class="button-container">
+        <button type="submit" class="btn btn-primary" onclick="redirectToChart()">Continuar</button>
+      </div>
+    </form>
+    
+    <script>
+      function redirectToChart() {
+        // Obtener los valores seleccionados
+        const selectedPk = document.getElementById('portfolio-select').value;
+        const dateStart = document.getElementById('date-start').value;
+        const dateEnd = document.getElementById('date-end').value;
+    
+        // Validar que todos los campos estén completos
+        if (!selectedPk || !dateStart || !dateEnd) {
+          alert('Por favor, completa todos los campos.');
+          return;
+        }
+    
+        // Construir la URL con los parámetros
+        const baseUrl = `{% url 'admin:weights_chart' pk=0 %}`.replace('0', selectedPk);
+        const fullUrl = `${baseUrl}?dateStart=${dateStart}&dateEnd=${dateEnd}`;
+    
+        // Redirigir al usuario
+        window.location.href = fullUrl;
+      }
+    </script>
+    {% else %}
+      <p>No tienes portafolios disponibles.</p>
+    {% endif %}
+  </div>
+{% endblock %}

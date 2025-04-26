@@ -1,0 +1,220 @@
+<!-- templates/admin/weights_chart.html -->
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Portfolio Charts{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: Arial, sans-serif;
+  }
+
+  .section-header {
+    margin-bottom: 2rem;
+  }
+
+  .section-header h1 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-header .subtitle {
+    font-size: 1rem;
+    color: #666;
+  }
+
+  /* Form Styles */
+  .date-range-form {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .date-range-form label {
+    font-weight: bold;
+  }
+
+  .date-range-form input[type="date"] {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .btn-primary {
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    background-color: #0056b3;
+  }
+
+  /* Chart Section Styles */
+  .chart-section {
+    margin-bottom: 2rem;
+  }
+
+  .chart-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 2rem 0;
+  }
+</style>
+<link rel="stylesheet" href="{% static 'admin_custom/css/admin_custom.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <header class="section-header">
+    <h1>📊 Portfolio Evolution</h1>
+    <p class="subtitle">Visualize the performance and weight distribution of your portfolio over time.</p>
+  </header>
+
+  <!-- Date Range Selector -->
+  <form method="get" class="date-range-form">
+    <label for="dateStart">Start Date:</label>
+    <input type="date" id="dateStart" name="dateStart" value="{{ request.GET.dateStart }}" required>
+
+    <label for="dateEnd">End Date:</label>
+    <input type="date" id="dateEnd" name="dateEnd" value="{{ request.GET.dateEnd }}" required>
+
+    <button type="submit" class="btn-primary">Update</button>
+  </form>
+
+  <!-- Portfolio Value Chart -->
+  <section class="chart-section">
+    <h2>Total Portfolio Value (Vₜ)</h2>
+    <canvas id="vtChart"></canvas>
+  </section>
+
+  <hr class="divider">
+
+  <!-- Portfolio Weights Chart -->
+  <section class="chart-section">
+    <h2>Asset Weight Distribution (wᵢₜ)</h2>
+    <canvas id="weightsChart"></canvas>
+  </section>
+</div>
+
+<script>
+  // Utility function to initialize charts
+  function createChart(canvasId, chartType, chartData, options) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    return new Chart(ctx, {
+      type: chartType,
+      data: chartData,
+      options: options,
+    });
+  }
+
+  // Data from backend
+  const data = {{ chart_data| safe }};
+
+  // Initialize Portfolio Value Chart
+  const vtChart = createChart("vtChart", "line", {
+    labels: data.dates,
+    datasets: [{
+      label: "Portfolio Value (USD)",
+      data: data.vt,
+      borderColor: "rgb(75, 192, 192)",
+      backgroundColor: "rgba(75, 192, 192, 0.2)",
+      fill: true,
+    }],
+  }, {
+    responsive: true,
+    plugins: {
+      title: {
+        display: true,
+        text: "Evolution of Total Portfolio Value (Vₜ)",
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => `USD ${context.parsed.y.toLocaleString()}`,
+        },
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: "Dates",
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: "Value (USD)",
+        },
+        ticks: {
+          callback: (value) => `$${value.toLocaleString()}`,
+        },
+      },
+    },
+  });
+
+  // Initialize Asset Weight Distribution Chart
+  const weightsDatasets = Object.entries(data.weights).map(([name, values], index) => ({
+    label: name,
+    data: values,
+    borderColor: `hsl(${index * 30}, 70%, 50%)`,
+    backgroundColor: `hsla(${index * 30}, 70%, 50%, 0.2)`,
+    fill: true,
+  }));
+
+  const weightsChart = createChart("weightsChart", "line", {
+    labels: data.dates,
+    datasets: weightsDatasets,
+  }, {
+    responsive: true,
+    plugins: {
+      title: {
+        display: true,
+        text: "Asset Weight Distribution Over Time (wᵢₜ)",
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => `${context.dataset.label}: ${context.parsed.y.toFixed(2)}%`,
+        },
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: "Dates",
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: "Weight (%)",
+        },
+        ticks: {
+          callback: (value) => `${value.toFixed(1)}%`,
+        },
+      },
+    },
+    interaction: { mode: 'index', intersect: false },
+    stacked: true,
+  });
+</script>
+{% endblock %}

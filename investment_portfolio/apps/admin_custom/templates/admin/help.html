@@ -1,0 +1,114 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Ayuda del Panel{% endblock %}
+
+{% block extrahead %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/custom_admin.css' %}">
+{% endblock %}
+
+{% block content %}
+  <div class="panel-container">
+    <h1 class="panel-title">📘 Guía de Uso del Panel de Inversiones</h1>
+
+    <div class="card-grid">
+      <!-- Carga manual -->
+      <div class="card">
+        <div class="card-icon">🧑‍💼</div>
+        <div class="card-title">1. Agregar Activos (manual)</div>
+        <p class="card-description">
+          Ve a <strong>Assets</strong> y haz clic en “Add”. Rellena:
+          <ul style="margin-top: 0.5em;">
+            <li><strong>Name</strong>: nombre completo del activo (ej: "EEUU")</li>
+            <li><strong>Symbol</strong>: símbolo (ej: "USA")</li>
+            <li><strong>Currency</strong>: moneda base (ej: "USD")</li>
+          </ul>
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">📁</div>
+        <div class="card-title">2. Crear Portafolios (manual)</div>
+        <p class="card-description">
+          Ve a <strong>Portfolios</strong> y presiona “Add”.
+          <ul style="margin-top: 0.5em;">
+            <li><strong>User</strong>: usuario dueño del portafolio</li>
+            <li><strong>Name</strong>: nombre descriptivo (ej: "Portafolio 1")</li>
+            <li><strong>Currency</strong>: moneda base del portafolio</li>
+          </ul>
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">💰</div>
+        <div class="card-title">3. Cargar Precios (manual)</div>
+        <p class="card-description">
+          En <strong>Prices</strong> debes agregar registros para cada activo y cada fecha.
+          <ul style="margin-top: 0.5em;">
+            <li><strong>Asset</strong>: activo al que pertenece</li>
+            <li><strong>Date</strong>: fecha del precio</li>
+            <li><strong>Price</strong>: valor en la moneda del activo</li>
+          </ul>
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">⚖️</div>
+        <div class="card-title">4. Asignar pesos iniciales (manual)</div>
+        <p class="card-description">
+          En <strong>Weights</strong> debes agregar pesos para cada activo dentro de un portafolio.
+          <br>Ejemplo: Portafolio 1 → EEUU: 30%, Europa: 70%.
+          <br>La suma debe ser igual a 1.0 (100%).
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">📥</div>
+        <div class="card-title">5. Cargar archivo Excel</div>
+        <p class="card-description">
+          Ve a <a href="{% url 'admin:cargar_excel' %}">Cargar Excel</a> y selecciona un archivo `.xlsx` con 2 hojas:
+          <ul style="margin-top: 0.5em;">
+            <li><strong>Weights</strong>: pesos iniciales de cada activo por portafolio</li>
+            <li><strong>Prices</strong>: precios históricos por activo</li>
+          </ul>
+          El sistema procesará automáticamente:
+          <ul style="margin-top: 0.5em;">
+            <li>Las cantidades iniciales (<code>C_{i,0}</code>)</li>
+            <li>Snapshots de tenencias por día</li>
+            <li>Valores totales por fecha (<code>V_t</code>)</li>
+          </ul>
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">💱</div>
+        <div class="card-title">6. Rebalanceos (compra/venta)</div>
+        <p class="card-description">
+          Desde <strong>Portfolio Events</strong> puedes registrar un rebalanceo:
+          <ul style="margin-top: 0.5em;">
+            <li><strong>Type</strong>: "buy" o "sell"</li>
+            <li><strong>Asset</strong>: activo comprado o vendido</li>
+            <li><strong>Amount</strong>: monto en la moneda del portafolio</li>
+            <li><strong>Price</strong>: precio de la transacción</li>
+            <li><strong>Date</strong>: fecha del rebalanceo</li>
+          </ul>
+          El sistema actualiza automáticamente las tenencias desde esa fecha en adelante.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">📈</div>
+        <div class="card-title">7. Ver evolución del portafolio</div>
+        <p class="card-description">
+          Desde la API o modelos <strong>PortfolioValue</strong> y <strong>HoldingSnapshot</strong> puedes consultar:
+          <ul style="margin-top: 0.5em;">
+            <li>El valor total por día (<code>V_t</code>)</li>
+            <li>La distribución por activo (<code>w_{i,t}</code>)</li>
+          </ul>
+          También se puede graficar con Stacked Area o líneas en el panel visual.
+        </p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

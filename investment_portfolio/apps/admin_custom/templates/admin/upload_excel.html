@@ -1,0 +1,112 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Cargar Excel{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+  .excel-upload-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+  }
+
+  /* Estilos para el título */
+  .excel-upload-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  /* Estilos para los campos del formulario */
+  .form-field {
+    margin-bottom: 15px;
+    text-align: left;
+  }
+
+  /* Estilos para el dropdown */
+  #id_user {
+    width: 100%;
+    height: 40px;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  /* Estilos para el campo de monto inicial */
+  #id_initial_amount {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  /* Estilos para el botón de envío */
+  .submit-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #28a745; /* Color verde */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .submit-btn:hover {
+    background-color: #218838; /* Color verde más oscuro */
+  }
+</style>
+<link rel="stylesheet" href="{% static 'admin_custom/css/admin_custom.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="excel-upload-container">
+  <h1 class="excel-upload-title">📥 Cargar archivo Excel</h1>
+
+  <form method="post" enctype="multipart/form-data" class="excel-upload-form">
+    {% csrf_token %}
+
+    <!-- Dropdown para seleccionar un usuario -->
+    <div class="form-field">
+      <label for="id_user">Seleccionar usuario:</label><br>
+      <select id="id_user" name="user" required>
+        <option value="">-- Selecciona un usuario --</option>
+        {% for user in users %}
+        <option value="{{ user.id }}">{{ user.username }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Campo para cargar el archivo Excel -->
+    <div class="form-field">
+      <label for="id_file">Archivo .xlsx</label><br>
+      {{ form.file }}
+    </div>
+
+    <!-- Campo para ingresar el monto inicial -->
+    <div class="form-field">
+      <label for="id_initial_amount">Monto Inicial (v0):</label><br>
+      <input type="number" id="id_initial_amount" name="initial_amount" step="0.01" min="1" required />
+    </div>
+
+    <button type="submit" class="submit-btn">
+      Subir y procesar
+    </button>
+  </form>
+
+  {% if messages %}
+  <div class="message-area">
+    {% for message in messages %}
+    <div class="message-success">
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
