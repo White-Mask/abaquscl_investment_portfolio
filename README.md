@@ -14,9 +14,6 @@ Este proyecto es una aplicación Django diseñada para gestionar portafolios de 
 4. [Ejecución del Proyecto](#ejecución-del-proyecto)
 5. [Comandos Personalizados](#comandos-personalizados)
 6. [Panel de Administración Gráfico](#panel-de-administración-gráfico)
-7. [Contribuciones](#contribuciones)
-8. [Licencia](#licencia)
-
 ---
 
 ## Características Principales
