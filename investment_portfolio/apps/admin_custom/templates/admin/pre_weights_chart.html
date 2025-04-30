@@ -114,12 +114,13 @@
       <input type="date" id="date-end" required>
     
       <div class="button-container">
-        <button type="submit" class="btn btn-primary" onclick="redirectToChart()">Continuar</button>
+        <button type="submit" class="btn btn-primary" onclick="redirectToChart(event)">Continuar</button>
       </div>
     </form>
     
     <script>
-      function redirectToChart() {
+      function redirectToChart(event) {
+        event.preventDefault();
         // Obtener los valores seleccionados
         const selectedPk = document.getElementById('portfolio-select').value;
         const dateStart = document.getElementById('date-start').value;

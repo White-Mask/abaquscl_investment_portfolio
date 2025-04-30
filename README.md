@@ -45,11 +45,11 @@ Este proyecto es una aplicación Django diseñada para gestionar portafolios de 
    Edita `.env` con las credenciales necesarias:
 
    ```env
-   DJANGO_SECRET_KEY='django-secret-key'
-   DB_HOST=db
-   DB_NAME=postgres
-   DB_USER=postgres
-   DB_PASS=postgres
+   DJANGO_SECRET_KEY='j81l2)kx4xcnsx6%@itade&*smrnx*m1yo-9%j^3+exx#(us7'
+   DJANGO_DB_HOST=db
+   DJANGO_DB_NAME=postgres
+   DJANGO_DB_USER=postgres
+   DJANGO_DB_PASSWORD=postgres
    DJANGO_SUPERUSER_PASSWORD=1234
    DJANGO_DEBUG=True
    DJANGO_DB_PORT=5432
